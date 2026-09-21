@@ -30,8 +30,8 @@ app = Flask(__name__)
 PROFILE = {
     "name": "Jonayed Hossain",
     "title": "AI/ML Engineer",
-    "nav_logo": "JONAYED.HOSSAIN",
-    "tagline": "AI / ML ENGINEER · DHAKA, BANGLADESH",
+    "nav_logo": "JONAYED HOSSAIN",
+    "tagline": "Data Analyst,AI / ML Practitioner· ",
     "headline_line1": "Building systems that understand,",
     "headline_line2_prefix": "not just",
     "headline_highlight": "compute",
@@ -58,7 +58,7 @@ PROFILE = {
         "about systems that are explainable, efficient, and genuinely useful — "
         "not just accurate on a benchmark.",
 
-        "I'm a huge Barcelona fan. I'm a Messi fanboy.",
+        "I'm a huge Barcelona fan. A Messi fanboy.",
     ],
     "clock_city": "Dhaka",
     "clock_timezone": "Asia/Dhaka",
