@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ profile.name }} — {{ profile.title }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<canvas id="net"></canvas>
+<div class="mesh"></div>
+<div class="scanlines"></div>
+<div class="grain"></div>
+<div class="vignette"></div>
+<div id="progress"></div>
+
+<div id="palette-overlay">
+  <div id="palette">
+    <input id="palette-input" class="mono" placeholder="Type a command or search…" autocomplete="off">
+    <div class="palette-list" id="palette-list"></div>
+  </div>
+</div>
+
+<nav id="nav">
+  <div class="logo"><span class="dot"></span> {{ profile.nav_logo }}</div>
+  <div class="navlinks">
+    <a href="#about">About</a>
+    <a href="#achievements">Achievements</a>
+    <a href="#work">Work</a>
+    <a href="#research">Research</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="hud-right">
+    <div class="hud-clock mono" id="clock">{{ profile.clock_city|upper }} · --:--:--</div>
+    <div class="kbd-hint" id="paletteOpenBtn">Search <kbd>⌘K</kbd></div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag"><span class="bar"></span> {{ profile.tagline }}</div>
+  <h1><span class="glitch" id="glitchTitle" data-text="{{ profile.headline_line1 }}">{{ profile.headline_line1 }}</span><br>{{ profile.headline_line2_prefix }} <span class="grad">{{ profile.headline_highlight }}</span>.</h1>
+  <div class="hero-role mono"><span id="typed"></span><span class="cursor-blink"></span></div>
+  <p class="hero-desc">{{ profile.bio_short }}</p>
+  <div class="hero-cta">
+    <a href="#work" class="btn btn-primary magnetic">View my work</a>
+    <a href="#contact" class="btn btn-ghost magnetic">Get in touch</a>
+  </div>
+  <div class="scroll-hint"><div class="line"></div> SCROLL</div>
+</section>
+
+<section id="about">
+  <div class="sec-head reveal">
+    <div><div class="sec-num mono">01 — ABOUT</div><h2>Who I am</h2></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      {% for para in profile.bio_paragraphs %}
+      <p>{{ para|safe }}</p>
+      {% endfor %}
+    </div>
+    <div class="terminal reveal">
+      <div class="term-bar">
+        <div class="term-dot" style="background:#ff5f57"></div>
+        <div class="term-dot" style="background:#febc2e"></div>
+        <div class="term-dot" style="background:#28c840"></div>
+      </div>
+      <div class="term-body mono" id="termBody" data-lines='{{ terminal_lines_json|safe }}'></div>
+    </div>
+  </div>
+
+  <div class="stats reveal">
+    {% for stat in stats %}
+    <div class="stat"><div class="num" {% if stat.count is not none %}data-count="{{ stat.count }}"{% endif %}>
+      {% if stat.count is not none %}<span>0</span>{% else %}<span>{{ stat.value }}</span>{% endif %}
+    </div><div class="label">{{ stat.label }}</div></div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="achievements">
+  <div class="sec-head reveal">
+    <div><div class="sec-num mono">02 — ACHIEVEMENTS</div><h2>Achievements</h2></div>
+  </div>
+  <div class="achievements-grid reveal">
+    {% if achievements %}
+      {% for ach in achievements %}
+      <div class="achievement-card">
+        <img src="{{ url_for('static', filename=ach.image) }}" alt="{{ ach.title }}">
+        <div class="achievement-title">{{ ach.title }}</div>
+        {% if ach.issuer %}<div class="achievement-issuer">{{ ach.issuer }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="achievements-empty">Certificates coming soon.</div>
+    {% endif %}
+  </div>
+</section>
+
+<section id="work">
+  <div class="sec-head reveal">
+    <div><div class="sec-num mono">03 — WORK</div><h2>Selected projects</h2></div>
+  </div>
+  <div class="projects reveal">
+    {% for project in projects %}
+    <div class="project" data-tilt>
+      <div class="project-idx">{{ '%02d'|format(loop.index) }}</div>
+      <div>
+        <h3>{{ project.title }}</h3>
+        <p>{{ project.description }}</p>
+        <div class="project-tags">
+          {% for tag in project.tags %}<span>{{ tag }}</span>{% endfor %}
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="research">
+  <div class="sec-head reveal">
+    <div><div class="sec-num mono">04 — RESEARCH</div><h2>Publications</h2></div>
+  </div>
+  <div class="reveal">
+    {% for pub in publications %}
+    <div class="pub">
+      <h3>{% if pub.url %}<a href="{{ pub.url }}" target="_blank" rel="noopener">{{ pub.title }}</a>{% else %}{{ pub.title }}{% endif %}</h3>
+      <div class="venue">{{ pub.venue }}</div>
+      <p>{{ pub.description }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-wrap">
+    <div class="reveal">
+      <div class="sec-num mono" style="margin-bottom:20px;">05 — CONTACT</div>
+      <div class="contact-big">{{ profile.contact_headline_prefix }} <span class="grad">{{ profile.contact_headline_highlight }}</span> {{ profile.contact_headline_suffix }}</div>
+    </div>
+    <div class="contact-links reveal">
+      {% for link in contact_links %}
+      <a href="{{ link.url }}">{{ link.label }} <span>{{ link.hint }}</span></a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>© {{ current_year }} {{ profile.name }}</div>
+  <div class="mono">DESIGNED &amp; BUILT IN {{ profile.footer_city|upper }}</div>
+</footer>
+
+<script>
+  window.SITE_DATA = {{ site_data_json|safe }};
+</script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
