@@ -63,9 +63,9 @@ PROFILE = {
     "clock_city": "Dhaka",
     "clock_timezone": "Asia/Dhaka",
     "footer_city": "Dhaka",
-    "contact_headline_prefix": "Let's build something",
-    "contact_headline_highlight": "intelligent",
-    "contact_headline_suffix": "together.",
+    "contact_headline_prefix": "More Updates",
+    "contact_headline_highlight": "Will Be",
+    "contact_headline_suffix": "Come.",
 }
 
 TYPED_PHRASES = [
